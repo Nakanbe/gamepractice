@@ -35,7 +35,7 @@ thead th{
   margin: 10px 0 0 0;
 }
 .gametable tbody tr {
-    border: 1px solid #dbdbdb;
+  border: 1px solid #dbdbdb;
 }
 .gametable tr.more td {
   background-color: #eef8ff;
@@ -58,7 +58,7 @@ thead th{
   margin: 0 10px;
 }
 
-.gametable td.odds span{
+.gametable tr.moreContent td.odds span{
 	width: 65px;
   text-align: center;
   background: #b6dfff;

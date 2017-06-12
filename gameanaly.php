@@ -26,7 +26,7 @@
       //$GameData[$date[1][$i-1]][$key]['date'] = $date[1][$i-1];
 
       preg_match_all("/<span class=\"leagueName\".*?>(.*?)\s?<\/span>/", $value, $leagueName);  //leagueName
-      $GameData[$date[1][$i-1]][$key]['leagueName'] = $leagueName[1][0];  //$GameData['2017-06-03'][0]['leagueName']
+      $GameData[$date[1][$i-1]][$key]['leaguname'] = $leagueName[1][0];  //$GameData['2017-06-03'][0]['leagueName']
 
       preg_match_all("/<span class=\"ht\">(.*?)\s?<\/span>/", $value, $ht);  //ht
       $GameData[$date[1][$i-1]][$key]['ht'] = $ht[1][0];
@@ -54,7 +54,7 @@
 
         //籃球缺後面的資料 所以rq[1][2] and odds[1][4] and odds[1][5] 沒有資料 缺大小
         if($analyGame == "basketball1"){
-          $rq[1][2] = "NULL";
+          $rq[1][2] = "null";
           $odds[1][4] = "";
           $odds[1][5] = "";
         }
@@ -63,7 +63,7 @@
         else if($analyGame == "basketball2"){
           //
           $rq[1][2] = $rq[1][1];
-          $rq[1][1] = "NULL";
+          $rq[1][1] = "null";
           for($j = 2; $j <= 3; $j++){
             $odds[1][$j+2] = $odds[1][$j];
             $odds[1][$j] = "";
@@ -74,7 +74,7 @@
       //足球缺前面的資料 所以rq[1][0] and odds[1][0] and odds[1][1] and odds[1][2] 沒有資料
       if(count($odds[1]) == 3){  //odds只有三筆資料 
         $rq[1][1] = $rq[1][0];
-        $rq[1][0] = "NULL";
+        $rq[1][0] = "null";
         for($j = 3; $j <= 5; $j++){
           $odds[1][$j] = "";
         }
@@ -107,8 +107,6 @@
   //字串 = "2017-06-11,J2联赛,不死鸟,町田泽维,14:00,0,-1,胜 2.13,平 3.12,负 2.95,胜 4.80,平 3.70,负 1.54,0;
   //        2017-06-11,J2联赛,不死鸟,町田泽维,14:00,NULL,-1,胜 2.13,平 3.12,负 2.95,,,,0"
 
-  $newGamestr = '';
-  $updateGamestr = '';
   $querystr = "INSERT INTO betgame (bet_date, bet_leaguname, bet_ht, bet_at, bet_time, bet_rq0, bet_rq1, bet_odds0, bet_odds1, bet_odds2, bet_odds3, bet_odds4, bet_odds5, bet_num) VALUES ";  //INSTERT string
   $flag = 0; //是否要INSERT
   $i = 0;
@@ -130,7 +128,7 @@
                         betgame 
                       WHERE 
                         bet_date = '" . $key . "' AND 
-                        bet_leaguname = '" . $value2['leagueName'] . "' AND 
+                        bet_leaguname = '" . $value2['leaguname'] . "' AND 
                         bet_ht = '" . $value2['ht'] . "' AND 
                         bet_at = '" . $value2['at'] . "' AND
                         bet_time = '" . $value2['time'] . "'";
@@ -152,12 +150,6 @@
                             bet_num=" . $value2['num'] . "
                           WHERE
                             bet_ID=" . $row['bet_ID'];
-          //更新資料的字串
-          $updateGamestr .= $key;  //把日期加進去字串
-          foreach($value2 as $newdata){
-        		$updateGamestr .= ',' . $newdata;
-        	}
-        	$updateGamestr .= ';'; //最後要加';'來分隔不同資料
 
         	// //JSON {"new": 
         	// 					[{"bet_date": 2017,
@@ -168,26 +160,20 @@
         	// 				  [{},
         	// 				   {},
         	// 				   {}]}
-        	$value2['bet_date'] = $key;
+        	$value2['date'] = $key;
         	array_push($updateGameJSON, $value2);
 
           gamedb_execute($queryupdate,$conn);//執行SQL
         }
       }
       else{
-      	//新增資料的字串
-        $newGamestr .= $key;  //把日期加進去字串
-        foreach($value2 as $newdata){
-        	$newGamestr .= ',' .$newdata;
-        }
-        $newGamestr .= ';';  //最後要加';'來分隔不同資料
 
         //JSON
-        $value2['bet_date'] = $key;
+        $value2['date'] = $key;
         array_push($insertGameJSON, $value2);
 
         //組合要INSERT的資料
-        $querystr .= "('" . $key . "','" . $value2['leagueName'] . "','" .
+        $querystr .= "('" . $key . "','" . $value2['leaguname'] . "','" .
                                            $value2['ht'] . "','" .
                                            $value2['at'] . "','" .
                                            $value2['time'] . "'," .
